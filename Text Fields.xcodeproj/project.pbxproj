@@ -6,30 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AB08DD002CD11ED20090E103 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB08DCF72CD11ED20090E103 /* Assets.xcassets */; };
+		AB08DD022CD11ED20090E103 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB08DCFA2CD11ED20090E103 /* LaunchScreen.storyboard */; };
+		AB08DD042CD11ED20090E103 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB08DCF62CD11ED20090E103 /* AppDelegate.swift */; };
+		AB08DD052CD11ED20090E103 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB08DCFD2CD11ED20090E103 /* SceneDelegate.swift */; };
+		AB08DD062CD11ED20090E103 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB08DCFE2CD11ED20090E103 /* MainViewController.swift */; };
+		AB08DD0E2CD1294A0090E103 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB08DD0D2CD1294A0090E103 /* Helper.swift */; };
+		AB08DD122CD285C50090E103 /* TextFieldsManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB08DD112CD285C50090E103 /* TextFieldsManagers.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AB08DCDE2CD11EBF0090E103 /* Text Fields.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Text Fields.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB08DCF62CD11ED20090E103 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AB08DCF72CD11ED20090E103 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AB08DCF82CD11ED20090E103 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB08DCF92CD11ED20090E103 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AB08DCFD2CD11ED20090E103 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		AB08DCFE2CD11ED20090E103 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		AB08DD0D2CD1294A0090E103 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		AB08DD112CD285C50090E103 /* TextFieldsManagers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldsManagers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AB08DCF02CD11EC00090E103 /* Exceptions for "Text Fields" folder in "Text Fields" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = AB08DCDD2CD11EBF0090E103 /* Text Fields */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		AB08DCE02CD11EBF0090E103 /* Text Fields */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AB08DCF02CD11EC00090E103 /* Exceptions for "Text Fields" folder in "Text Fields" target */,
-			);
-			path = "Text Fields";
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AB08DCDB2CD11EBF0090E103 /* Frameworks */ = {
@@ -45,7 +42,7 @@
 		AB08DCD52CD11EBF0090E103 = {
 			isa = PBXGroup;
 			children = (
-				AB08DCE02CD11EBF0090E103 /* Text Fields */,
+				AB08DCFF2CD11ED20090E103 /* Text Fields */,
 				AB08DCDF2CD11EBF0090E103 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +53,61 @@
 				AB08DCDE2CD11EBF0090E103 /* Text Fields.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AB08DCFF2CD11ED20090E103 /* Text Fields */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DD102CD285A60090E103 /* Managers */,
+				AB08DD0C2CD1292E0090E103 /* Helpers */,
+				AB08DD0B2CD11F250090E103 /* Views */,
+				AB08DD072CD11ED90090E103 /* Resources */,
+				AB08DD092CD11EF80090E103 /* Application */,
+				AB08DCF82CD11ED20090E103 /* Info.plist */,
+			);
+			path = "Text Fields";
+			sourceTree = "<group>";
+		};
+		AB08DD072CD11ED90090E103 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DCFA2CD11ED20090E103 /* LaunchScreen.storyboard */,
+				AB08DCF72CD11ED20090E103 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AB08DD092CD11EF80090E103 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DCF62CD11ED20090E103 /* AppDelegate.swift */,
+				AB08DCFD2CD11ED20090E103 /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		AB08DD0B2CD11F250090E103 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DCFE2CD11ED20090E103 /* MainViewController.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AB08DD0C2CD1292E0090E103 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DD0D2CD1294A0090E103 /* Helper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		AB08DD102CD285A60090E103 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				AB08DD112CD285C50090E103 /* TextFieldsManagers.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -72,9 +124,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				AB08DCE02CD11EBF0090E103 /* Text Fields */,
 			);
 			name = "Text Fields";
 			packageProductDependencies = (
@@ -122,6 +171,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB08DD002CD11ED20090E103 /* Assets.xcassets in Resources */,
+				AB08DD022CD11ED20090E103 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,10 +183,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB08DD042CD11ED20090E103 /* AppDelegate.swift in Sources */,
+				AB08DD052CD11ED20090E103 /* SceneDelegate.swift in Sources */,
+				AB08DD122CD285C50090E103 /* TextFieldsManagers.swift in Sources */,
+				AB08DD062CD11ED20090E103 /* MainViewController.swift in Sources */,
+				AB08DD0E2CD1294A0090E103 /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AB08DCFA2CD11ED20090E103 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB08DCF92CD11ED20090E103 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		AB08DCF22CD11EC00090E103 /* Debug */ = {
@@ -150,9 +217,8 @@
 				INFOPLIST_FILE = "Text Fields/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -178,9 +244,8 @@
 				INFOPLIST_FILE = "Text Fields/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
