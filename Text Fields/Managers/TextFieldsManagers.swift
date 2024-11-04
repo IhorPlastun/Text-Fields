@@ -94,7 +94,6 @@ final class TextFieldsManagers {
                 return false
             }
         }
-        
         return true
     }
     

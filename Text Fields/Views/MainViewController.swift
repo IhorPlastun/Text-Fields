@@ -139,7 +139,6 @@ final class MainViewController: UIViewController {
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        //        scrollView.backgroundColor = .brown
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
@@ -155,7 +154,6 @@ final class MainViewController: UIViewController {
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setUpUI()
         addDefaultConfiguration()
         addObservers()
@@ -187,7 +185,7 @@ final class MainViewController: UIViewController {
     private func setUpUI() {
         let arrViews = [ headerLabel, withoutNumberLabel ,withoutNumbersTextField, inputLimitLabel, countCharLabel, inputLimitTextField,
                          maskedLabel, maskedTextField, linkLabel, linkTextField, passwordLabel, passwordTextField, rulesLengthCharLabel,
-                         rulesCountNumLabel, rulesLowercaseLabel, rulesUppercaseLabel]
+                         rulesCountNumLabel, rulesLowercaseLabel, rulesUppercaseLabel ]
         
         Helper.shared.addSubviews(subviews: [scrollView], view: self.view)
         scrollView.addSubview(contentView)
