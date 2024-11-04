@@ -136,13 +136,30 @@ final class MainViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        //        scrollView.backgroundColor = .brown
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let contentView:UIView = {
+        let keyboardView = UIView()
+        keyboardView.backgroundColor = .red
+        keyboardView.translatesAutoresizingMaskIntoConstraints = false
+        return keyboardView
+    }()
+    
+    
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setUpUI()
         addDefaultConfiguration()
         addObservers()
         addGestureRecognizers()
-        setUpUI()
     }
     
     private func addDefaultConfiguration() {
@@ -166,17 +183,29 @@ final class MainViewController: UIViewController {
     @objc private func hideKeyboard() {
         self.view.endEditing(true)
     }
-    
+    // MARK: serup UI
     private func setUpUI() {
-        let arrViews = [headerLabel, withoutNumberLabel ,withoutNumbersTextField, inputLimitLabel, countCharLabel, inputLimitTextField,
-                        maskedLabel, maskedTextField, linkLabel, linkTextField, passwordLabel, passwordTextField, rulesLengthCharLabel,
-                        rulesCountNumLabel, rulesLowercaseLabel, rulesUppercaseLabel]
+        let arrViews = [ headerLabel, withoutNumberLabel ,withoutNumbersTextField, inputLimitLabel, countCharLabel, inputLimitTextField,
+                         maskedLabel, maskedTextField, linkLabel, linkTextField, passwordLabel, passwordTextField, rulesLengthCharLabel,
+                         rulesCountNumLabel, rulesLowercaseLabel, rulesUppercaseLabel]
         
-        Helper.shared.addSubviews(subviews: arrViews, view: self.view)
+        Helper.shared.addSubviews(subviews: [scrollView], view: self.view)
+        scrollView.addSubview(contentView)
+        Helper.shared.addSubviews(subviews: arrViews, view:self.view)
         Helper.shared.addBackgroundForTextField(subviews: arrViews, parentView: self.view)
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            
+            headerLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
             headerLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
             withoutNumberLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 30),
@@ -186,7 +215,6 @@ final class MainViewController: UIViewController {
             withoutNumbersTextField.topAnchor.constraint(equalTo: withoutNumberLabel.bottomAnchor, constant: 10),
             withoutNumbersTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             withoutNumbersTextField.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -48),
-            
             
             inputLimitLabel.topAnchor.constraint(equalTo: withoutNumbersTextField.bottomAnchor, constant: 40),
             inputLimitLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
@@ -226,10 +254,11 @@ final class MainViewController: UIViewController {
             rulesCountNumLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 24),
             
             rulesLowercaseLabel.topAnchor.constraint(equalTo: rulesCountNumLabel.bottomAnchor, constant: 10),
-            rulesLowercaseLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 24),
+            rulesLowercaseLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             
             rulesUppercaseLabel.topAnchor.constraint(equalTo: rulesLowercaseLabel.bottomAnchor, constant: 10),
-            rulesUppercaseLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 24)
+            rulesUppercaseLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            rulesUppercaseLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -150)
         ])
     }
 }
@@ -237,10 +266,9 @@ final class MainViewController: UIViewController {
 extension MainViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == linkTextField {
-            if let url = URL(string:"https://" + (textField.text ?? "")) {
-                if let alert = manager.openUrl(url: url) {
-                    present(alert, animated: true, completion: nil)
-                }
+            guard var strURL = textField.text else { return true }
+            if let alert = manager.openUrl(strURL: strURL) {
+                present(alert, animated: true, completion: nil)
             }
         } else {
             textField.resignFirstResponder()
@@ -263,7 +291,7 @@ extension MainViewController: UITextFieldDelegate {
         }
         
         if textField == withoutNumbersTextField {
-            textField.text = manager.noNumberInString(string: textField.text ?? "")
+            return manager.noNumberInString(textField: textField, range: range, string: string)
         }
         return true
     }
@@ -274,22 +302,20 @@ extension MainViewController {
         if passwordTextField.isFirstResponder {
             if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
                 let keyboardHeight = keyboardFrame.height
-                UIView.animate(withDuration: 0.3) {
-                    self.view.transform = CGAffineTransform(translationX: 0, y: -(keyboardHeight/2))
-                    self.view.layoutIfNeeded()
-                }
+                scrollView.contentSize.height += keyboardHeight / 2
             }
         }
-        
     }
     
     @objc private func keyboardWillHide(notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-            let keyboardHeight = keyboardFrame.height
-            UIView.animate(withDuration: 0.3) {
-                self.view.transform = .identity
+            self.scrollView.contentSize.height -= keyboardFrame.height / 2
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                guard let self = self else { return }
                 self.view.layoutIfNeeded()
             }
+            
         }
     }
 }
+

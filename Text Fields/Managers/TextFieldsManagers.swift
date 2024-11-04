@@ -9,13 +9,17 @@ import Foundation
 import UIKit
 
 final class TextFieldsManagers {
-    func openUrl(url: URL) -> UIAlertController? {
+    func openUrl(strURL: String) -> UIAlertController? {
         var alert: UIAlertController?
+        var urlString = strURL
+        if !urlString.lowercased().hasPrefix("http://") && !urlString.lowercased().hasPrefix("https://") {
+            urlString = "https://\(urlString)"
+        }
         
-        if UIApplication.shared.canOpenURL(url) {
+        if let url = URL(string: urlString), let host = url.host, url.scheme != nil {
             UIApplication.shared.open(url)
         } else {
-            alert = UIAlertController(title: "Ошибка", message: "Не коректный адрес", preferredStyle: .alert)
+            alert = UIAlertController(title: "Ошибка", message: "Некорректный адрес", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default)
             alert?.addAction(action)
         }
@@ -23,9 +27,14 @@ final class TextFieldsManagers {
     }
     
     func validPasswordRules(textField: UITextField, range: NSRange, string: String, labels: [UILabel]) -> Bool {
+        if string.contains(" ") {
+            return false
+        }
+        
         let currentText = textField.text ?? ""
         guard let textRange = Range(range, in: currentText) else { return true }
         let str = currentText.replacingCharacters(in: textRange, with: string)
+        
         let containsLowercase = str.contains(where: \.isLowercase)
         let containsUppercase = str.contains(where: \.isUppercase)
         let containsNumber = str.contains(where: \.isNumber)
@@ -53,43 +62,56 @@ final class TextFieldsManagers {
         if string.isEmpty {
             return true
         }
-        
+        if !string.allSatisfy({ $0.isLetter || $0.isNumber }) {
+            return false
+        }
         guard let textRange = Range(range, in: currentText) else { return false }
-        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+        var updatedText = currentText.replacingCharacters(in: textRange, with: string)
         
         if updatedText.count > 11 {
             return false
         }
-        
         if updatedText.count <= 5 {
-            if !string.isEmpty && !string.allSatisfy({ $0.isLetter }) {
+            if !string.allSatisfy({ $0.isLetter }) {
                 return false
             }
         }
-        
-        if updatedText.count == 5 && !updatedText.contains("-") {
-            textField.text = updatedText + "-"
+        if currentText.count == 5 && !currentText.contains("-") {
+            if string.allSatisfy({ $0.isLetter }) {
+                return false
+            }
+        }
+        if updatedText.count == 6 && !updatedText.contains("-") {
+            updatedText.insert("-", at: updatedText.index(updatedText.startIndex, offsetBy: 5))
+            textField.text = updatedText
             return false
         }
-        
         if updatedText.count > 6 {
-            if !string.isEmpty && !string.allSatisfy({ $0.isNumber }) {
+            if string.contains(where: { $0.isLetter }) {
+                return false
+            }
+            if !string.allSatisfy({ $0.isNumber }) {
                 return false
             }
         }
+        
         return true
     }
     
-    func noNumberInString(string: String) -> String {
-        var characters = Array(string)
-        if characters.contains(where: \.isNumber) {
-            characters.removeAll(where: \.isNumber)
+    
+    
+    func noNumberInString(textField: UITextField, range: NSRange, string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let textRange = Range(range, in: currentText) else { return true}
+        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+        if updatedText.allSatisfy({ !$0.isNumber }){
+            return true
+        } else {
+            return false
         }
-        return String(characters)
     }
     
     func limitCharInString(textField: UITextField, range: NSRange, string: String, label: UILabel) -> Bool {
-        
         let currentText = textField.text ?? ""
         guard let textRange = Range(range, in: currentText) else { return true }
         let updatedText = currentText.replacingCharacters(in: textRange, with: string)
