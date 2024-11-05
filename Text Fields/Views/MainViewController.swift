@@ -297,11 +297,9 @@ extension MainViewController: UITextFieldDelegate {
 // MARK: keyboard notification
 extension MainViewController {
     @objc private func keyboardWillShow(notification: Notification, textField: UITextField) {
-        if passwordTextField.isFirstResponder {
-            if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                let keyboardHeight = keyboardFrame.height
-                scrollView.contentSize.height += keyboardHeight / 2
-            }
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
+            scrollView.contentSize.height += keyboardHeight / 2
         }
     }
     
@@ -312,7 +310,6 @@ extension MainViewController {
                 guard let self = self else { return }
                 self.view.layoutIfNeeded()
             }
-            
         }
     }
 }

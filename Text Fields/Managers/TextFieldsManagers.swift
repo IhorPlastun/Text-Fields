@@ -11,17 +11,19 @@ import UIKit
 final class TextFieldsManagers {
     func openUrl(strURL: String) -> UIAlertController? {
         var alert: UIAlertController?
-        var urlString = strURL
-        if !urlString.lowercased().hasPrefix("http://") && !urlString.lowercased().hasPrefix("https://") {
-            urlString = "https://\(urlString)"
-        }
-        
-        if let url = URL(string: urlString), let host = url.host, url.scheme != nil {
-            UIApplication.shared.open(url)
-        } else {
-            alert = UIAlertController(title: "Ошибка", message: "Некорректный адрес", preferredStyle: .alert)
-            let action = UIAlertAction(title: "OK", style: .default)
-            alert?.addAction(action)
+        do {
+            let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+            let matches = detector.matches(in: strURL, options: [], range: NSRange(location: 0, length: strURL.utf16.count))
+            if matches.isEmpty{
+                alert = UIAlertController(title: "Ошибка", message: "Некорректный адрес", preferredStyle: .alert)
+                let action = UIAlertAction(title: "OK", style: .default)
+                alert?.addAction(action)
+            } else {
+                guard let link = matches.first?.url else { return nil }
+                UIApplication.shared.open(link)
+            }
+        } catch {
+            print("Ошибка \(error.localizedDescription)")
         }
         return alert
     }
