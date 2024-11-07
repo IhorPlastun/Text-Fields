@@ -17,14 +17,14 @@ final class PasswordView: UIView {
         return label
     }()
     
-    let passwordTextField: UITextField = {
+    private let passwordTextField: UITextField = {
         var textField = UITextField()
         textField.placeholder = "Password"
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
-     let rulesLengthCharLabel: UILabel = {
+    private let rulesLengthCharLabel: UILabel = {
         var label = UILabel()
         label.text = "Min length 8 characters."
         label.font = .systemFont(ofSize: .init(13))
@@ -32,7 +32,7 @@ final class PasswordView: UIView {
         return label
     }()
     
-     let rulesCountNumLabel: UILabel = {
+    private let rulesCountNumLabel: UILabel = {
         var label = UILabel()
         label.text = "Minimum 1 digit."
         label.font = .systemFont(ofSize: .init(13))
@@ -40,7 +40,7 @@ final class PasswordView: UIView {
         return label
     }()
     
-     let rulesLowercaseLabel: UILabel = {
+    private let rulesLowercaseLabel: UILabel = {
         var label = UILabel()
         label.text = "Minimum 1 lowercase."
         label.font = .systemFont(ofSize: .init(13))
@@ -48,7 +48,7 @@ final class PasswordView: UIView {
         return label
     }()
     
-     let rulesUppercaseLabel: UILabel = {
+    private let rulesUppercaseLabel: UILabel = {
         var label = UILabel()
         label.text = "Minimum 1 uppercase."
         label.font = .systemFont(ofSize: .init(13))
@@ -86,6 +86,17 @@ final class PasswordView: UIView {
             rulesUppercaseLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             rulesUppercaseLabel.bottomAnchor.constraint(equalTo:bottomAnchor)
         ])
+    }
+    
+    func getTextField() -> UITextField {
+        return passwordTextField
+    }
+    
+    func updateValidationStatus(result: [String: Bool]) {
+        rulesLengthCharLabel.textColor = result["minLengthRequirement"] == true ? .green : .red
+        rulesCountNumLabel.textColor = result["containsNumber"] == true ? .green : .red
+        rulesLowercaseLabel.textColor = result["containsLowercase"] == true ? .green : .red
+        rulesUppercaseLabel.textColor = result["containsUppercase"] == true ? .green : .red
     }
     
     override init(frame:CGRect) {

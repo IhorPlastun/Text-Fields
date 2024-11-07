@@ -7,22 +7,22 @@
 
 import Foundation
 
+
 final class TextFieldsManagers {
-    func openUrl(strURL: String) -> Bool {
+    func openUrl(strURL: String) -> (Bool, URL?) {
         do {
             let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
             let matches = detector.matches(in: strURL, options: [], range: NSRange(location: 0, length: strURL.utf16.count))
             if matches.isEmpty{
-                return true
+                return (false,nil)
             } else {
-                guard let link = matches.first?.url else { return false }
-                UIApplication.shared.open(link)
-                return false
+                guard let link = matches.first?.url else { return (false, nil) }
+                return (true, link)
             }
         } catch {
             print("Ошибка \(error.localizedDescription)")
         }
-        return true
+        return (true, nil)
     }
     
     func validPasswordRules(stringTextField: String, range: NSRange, string: String) -> [String: Bool] {

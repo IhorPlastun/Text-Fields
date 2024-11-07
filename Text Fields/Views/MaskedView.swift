@@ -17,7 +17,7 @@ final class MaskedView: UIView {
         return label
     }()
     
-    let maskedTextField: UITextField = {
+    private let maskedTextField: UITextField = {
         var textField = UITextField()
         textField.placeholder = "wwwww-ddddd"
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -36,6 +36,14 @@ final class MaskedView: UIView {
             maskedTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
             maskedTextField.widthAnchor.constraint(equalTo: widthAnchor, constant: -16),
         ])
+    }
+    
+    func getTextField() -> UITextField {
+        return maskedTextField
+    }
+    
+    func changeTextField(str: String) {
+        maskedTextField.text = str
     }
     
     override init(frame: CGRect) {

@@ -46,11 +46,16 @@ final class MainViewController: UIViewController {
     }
     
     private func addDefaultConfiguration() {
-        noDigitsView.noDigitsTextField.delegate = self
-        inputLimitView.inputLimitTextField.delegate = self
-        maskedView.maskedTextField.delegate = self
-        linkView.linkTextField.delegate = self
-        passwordView.passwordTextField.delegate = self
+        let noDigitsTextField = noDigitsView.getTextField()
+        noDigitsTextField.delegate = self
+        let inputLimitTextField = inputLimitView.getTextField()
+        inputLimitTextField.delegate = self
+        let maskedTextField = maskedView.getTextField()
+        maskedTextField.delegate = self
+        let linkTextField = linkView.getTextField()
+        linkTextField.delegate = self
+        let passwordTextField = passwordView.getTextField()
+        passwordTextField.delegate = self
     }
     
     // MARK: serup UI
@@ -106,9 +111,14 @@ final class MainViewController: UIViewController {
 // MARK: TextField delegate
 extension MainViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == linkView.linkTextField {
+        if textField == linkView.getTextField() {
             guard let strURL = textField.text else { return true }
-            if manager.openUrl(strURL: strURL){
+            let (shouldOpen, url) = manager.openUrl(strURL: strURL)
+            if shouldOpen {
+                if let url = url {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            } else {
                 let alert = UIAlertController(title: "Ошибка", message: "Некорректный адрес", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .default)
                 alert.addAction(action)
@@ -121,46 +131,43 @@ extension MainViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == passwordView.passwordTextField {
+        if textField == passwordView.getTextField() {
             guard let stringTextField = textField.text else { return true }
             if string.contains(" ") {
                 return false
             }
             let result = manager.validPasswordRules(stringTextField: stringTextField, range: range, string: string)
-            passwordView.rulesLengthCharLabel.textColor = result["minLengthRequirement"] == true ? .green : .red
-            passwordView.rulesCountNumLabel.textColor = result["containsNumber"] == true ? .green : .red
-            passwordView.rulesLowercaseLabel.textColor = result["containsLowercase"] == true ? .green : .red
-            passwordView.rulesUppercaseLabel.textColor = result["containsUppercase"] == true ? .green : .red
+            passwordView.updateValidationStatus(result: result)
         }
         
-        if textField == maskedView.maskedTextField {
+        if textField == maskedView.getTextField() {
             guard let stringTextField = textField.text else { return true }
             let (shouldChange, updatedText) = manager.maskedTextField(stringTextField: stringTextField, range: range, string: string)
             if string.isEmpty {
                 return true
             }
             if shouldChange {
-                textField.text = updatedText
+                maskedView.changeTextField(str: updatedText)
             }
             return false
         }
         
-        if textField == inputLimitView.inputLimitTextField {
+        if textField == inputLimitView.getTextField(){
             if let stringTextField = textField.text {
                 let (shouldChange, countChar) = manager.limitCharInString(stringTextField: stringTextField, range: range, string: string)
                 if shouldChange {
-                    inputLimitView.countCharLabel.text = "\(countChar)/10"
+                    inputLimitView.updateCharCount(count: countChar)
                     return true
                 }
                 return false
             }
         }
         
-        if textField == noDigitsView.noDigitsTextField {
+        if textField == noDigitsView.getTextField() {
             if let stringTextField = textField.text {
                 let (shouldChange, updatedText) = manager.noNumberInString(stringTextField: stringTextField, range: range, string: string)
                 if shouldChange {
-                    textField.text = updatedText
+                    noDigitsView.setTextField(str: updatedText)
                 }
                 return false
             }

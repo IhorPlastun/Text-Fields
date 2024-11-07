@@ -17,7 +17,7 @@ final class LinkView: UIView {
         return label
     }()
     
-    let linkTextField: UITextField = {
+    private let linkTextField: UITextField = {
         var textField = UITextField()
         textField.placeholder = "www.example.com"
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +38,10 @@ final class LinkView: UIView {
             linkTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
             linkTextField.widthAnchor.constraint(equalTo: widthAnchor, constant: -16),
         ])
+    }
+    
+    func getTextField() -> UITextField {
+        return linkTextField
     }
     
     override init(frame: CGRect) {

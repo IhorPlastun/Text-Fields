@@ -17,7 +17,7 @@ final class InputLimitView: UIView {
         return label
     }()
     
-     let countCharLabel: UILabel = {
+    private let countCharLabel: UILabel = {
         var label = UILabel()
         label.text = "0/10"
         label.font = .systemFont(ofSize: .init(15))
@@ -25,7 +25,7 @@ final class InputLimitView: UIView {
         return label
     }()
     
-     let inputLimitTextField: UITextField = {
+    private let inputLimitTextField: UITextField = {
         var textField = UITextField()
         textField.placeholder = "Type here"
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +49,14 @@ final class InputLimitView: UIView {
             inputLimitTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
             inputLimitTextField.widthAnchor.constraint(equalTo: widthAnchor, constant: -16),
         ])
+    }
+    
+    func getTextField() -> UITextField {
+        return inputLimitTextField
+    }
+    
+    func updateCharCount(count: Int) {
+        countCharLabel.text = "\(count)/10"
     }
     
     override init(frame: CGRect) {

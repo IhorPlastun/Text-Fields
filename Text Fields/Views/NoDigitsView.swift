@@ -18,7 +18,7 @@ final class NoDigitsView: UIView {
         return label
     }()
     
-    let noDigitsTextField: UITextField = {
+    private let noDigitsTextField: UITextField = {
         var textField = UITextField()
         textField.placeholder = "Type here"
         textField.backgroundColor = .clear
@@ -30,7 +30,7 @@ final class NoDigitsView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(noDigitsLabel)
         addSubview(noDigitsTextField)
-
+        
         NSLayoutConstraint.activate([
             noDigitsLabel.topAnchor.constraint(equalTo: topAnchor),
             noDigitsLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -41,13 +41,21 @@ final class NoDigitsView: UIView {
         ])
     }
     
+    func getTextField() -> UITextField {
+        return noDigitsTextField
+    }
+    
+    func setTextField(str: String) {
+        noDigitsTextField.text = str
+    }
+    
     override init(frame: CGRect) {
-         super.init(frame: frame)
+        super.init(frame: frame)
         setupUI()
-     }
-     
-     required init?(coder: NSCoder) {
-         super.init(coder: coder)
-         setupUI()
-     }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
 }
