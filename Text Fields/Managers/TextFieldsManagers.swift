@@ -6,121 +6,92 @@
 //
 
 import Foundation
-import UIKit
 
 final class TextFieldsManagers {
-    func openUrl(strURL: String) -> UIAlertController? {
-        var alert: UIAlertController?
+    func openUrl(strURL: String) -> Bool {
         do {
             let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
             let matches = detector.matches(in: strURL, options: [], range: NSRange(location: 0, length: strURL.utf16.count))
             if matches.isEmpty{
-                alert = UIAlertController(title: "Ошибка", message: "Некорректный адрес", preferredStyle: .alert)
-                let action = UIAlertAction(title: "OK", style: .default)
-                alert?.addAction(action)
+                return true
             } else {
-                guard let link = matches.first?.url else { return nil }
+                guard let link = matches.first?.url else { return false }
                 UIApplication.shared.open(link)
+                return false
             }
         } catch {
             print("Ошибка \(error.localizedDescription)")
         }
-        return alert
-    }
-    
-    func validPasswordRules(textField: UITextField, range: NSRange, string: String, labels: [UILabel]) -> Bool {
-        if string.contains(" ") {
-            return false
-        }
-        
-        let currentText = textField.text ?? ""
-        guard let textRange = Range(range, in: currentText) else { return true }
-        let str = currentText.replacingCharacters(in: textRange, with: string)
-        
-        let containsLowercase = str.contains(where: \.isLowercase)
-        let containsUppercase = str.contains(where: \.isUppercase)
-        let containsNumber = str.contains(where: \.isNumber)
-        let meetsLengthRequirement = str.count >= 8
-        
-        for label in labels {
-            switch label.text {
-            case "Minimum 1 lowercase.":
-                label.textColor = containsLowercase ? .systemGreen : .systemRed
-            case "Minimum 1 uppercase.":
-                label.textColor = containsUppercase ? .systemGreen : .systemRed
-            case "Minimum 1 digit.":
-                label.textColor = containsNumber ? .systemGreen : .systemRed
-            case "Min length 8 characters.":
-                label.textColor = meetsLengthRequirement ? .systemGreen : .systemRed
-            default:
-                break
-            }
-        }
         return true
     }
     
-    func maskedTextField(textField: UITextField, range: NSRange, string: String) -> Bool {
-        let currentText = textField.text ?? ""
+    func validPasswordRules(stringTextField: String, range: NSRange, string: String) -> [String: Bool] {
+        var rules: [String: Bool] = ["containsLowercase": false, "containsUppercase": false, "containsNumber": false, "minLengthRequirement":false]
+        
+        guard let textRange = Range(range, in: stringTextField) else { return rules }
+        let str = stringTextField.replacingCharacters(in: textRange, with: string)
+        
+        rules["containsLowercase"] = str.contains(where: \.isLowercase)
+        rules["containsUppercase"] = str.contains(where: \.isUppercase)
+        rules["containsNumber"] = str.contains(where: \.isNumber)
+        rules["minLengthRequirement"] = str.count >= 8
+        return rules
+    }
+    
+    func maskedTextField(stringTextField: String, range: NSRange, string: String) -> (Bool, String) {
         if string.isEmpty {
-            return true
+            if range.location == 5 && stringTextField[Range(range, in: stringTextField)!] == "-" {
+                return (false, stringTextField)
+            }
+            return (true, stringTextField)
         }
         if !string.allSatisfy({ $0.isLetter || $0.isNumber }) {
-            return false
+            return (false, stringTextField)
         }
-        guard let textRange = Range(range, in: currentText) else { return false }
-        var updatedText = currentText.replacingCharacters(in: textRange, with: string)
-        
+        guard let textRange = Range(range, in: stringTextField) else { return (false, stringTextField) }
+        var updatedText = stringTextField.replacingCharacters(in: textRange, with: string)
         if updatedText.count > 11 {
-            return false
+            return (false, stringTextField)
         }
         if updatedText.count <= 5 {
             if !string.allSatisfy({ $0.isLetter }) {
-                return false
-            }
-        }
-        if currentText.count == 5 && !currentText.contains("-") {
-            if string.allSatisfy({ $0.isLetter }) {
-                return false
+                return (false, stringTextField)
             }
         }
         if updatedText.count == 6 && !updatedText.contains("-") {
             updatedText.insert("-", at: updatedText.index(updatedText.startIndex, offsetBy: 5))
-            textField.text = updatedText
-            return false
         }
         if updatedText.count > 6 {
-            if string.contains(where: { $0.isLetter }) {
-                return false
-            }
-            if !string.allSatisfy({ $0.isNumber }) {
-                return false
+            let postDashText = updatedText.suffix(from: updatedText.index(updatedText.startIndex, offsetBy: 6))
+            if !postDashText.allSatisfy({ $0.isNumber }) {
+                return (false, stringTextField)
             }
         }
-        return true
+        if updatedText.count > 5 && updatedText[updatedText.index(updatedText.startIndex, offsetBy: 5)] != "-" {
+            return (false, stringTextField)
+        }
+        return (true, updatedText)
     }
     
     
     
-    func noNumberInString(textField: UITextField, range: NSRange, string: String) -> Bool {
-        let currentText = textField.text ?? ""
-        guard let textRange = Range(range, in: currentText) else { return true}
-        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+    func noNumberInString(stringTextField: String, range: NSRange, string: String) -> (Bool, String) {
+        guard let textRange = Range(range, in: stringTextField) else { return (true, stringTextField) }
+        let updatedText = stringTextField.replacingCharacters(in: textRange, with: string)
         if updatedText.allSatisfy({ !$0.isNumber }){
-            return true
+            return (true, updatedText)
         } else {
-            return false
+            return (false, updatedText)
         }
     }
     
-    func limitCharInString(textField: UITextField, range: NSRange, string: String, label: UILabel) -> Bool {
-        let currentText = textField.text ?? ""
-        guard let textRange = Range(range, in: currentText) else { return true }
-        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+    func limitCharInString(stringTextField: String, range: NSRange, string: String) -> (Bool, Int) {
+        guard let textRange = Range(range, in: stringTextField) else { return (true, stringTextField.count) }
+        let updatedText = stringTextField.replacingCharacters(in: textRange, with: string)
         if updatedText.count <= 10{
-            label.text = "\(updatedText.count)/10"
-            return true
+            return (true, updatedText.count)
         } else {
-            return false
+            return (false, updatedText.count)
         }
     }
 }
