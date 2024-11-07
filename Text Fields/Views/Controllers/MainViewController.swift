@@ -8,7 +8,6 @@
 import UIKit
 
 final class MainViewController: UIViewController, LinkViewDelegate {
-    private let manager = TextFieldsManagers()
     private let noDigitsView = NoDigitsView()
     private let inputLimitView = InputLimitView()
     private let maskedView = MaskedView()

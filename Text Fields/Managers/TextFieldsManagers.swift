@@ -9,6 +9,9 @@ import Foundation
 
 
 final class TextFieldsManagers {
+    static let shared = TextFieldsManagers()
+    private init(){}
+    
     func openUrl(strURL: String) -> (Bool, URL?) {
         do {
             let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)

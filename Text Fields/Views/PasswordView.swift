@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class PasswordView: UIView {
-    private let manager = TextFieldsManagers()
+
     
     private let passwordLabel: UILabel = {
         var label = UILabel()
@@ -117,7 +117,7 @@ extension PasswordView: UITextFieldDelegate {
         if string.contains(" ") {
             return false
         }
-        let result = manager.validPasswordRules(stringTextField: stringTextField, range: range, string: string)
+        let result = TextFieldsManagers.shared.validPasswordRules(stringTextField: stringTextField, range: range, string: string)
         rulesLengthCharLabel.textColor = result["minLengthRequirement"] == true ? .green : .red
         rulesCountNumLabel.textColor = result["containsNumber"] == true ? .green : .red
         rulesLowercaseLabel.textColor = result["containsLowercase"] == true ? .green : .red

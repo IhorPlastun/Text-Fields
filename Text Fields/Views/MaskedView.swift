@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class MaskedView: UIView {
-    private let manager = TextFieldsManagers()
+    
     
     private let maskedLabel: UILabel = {
         var label = UILabel()
@@ -66,7 +66,7 @@ extension MaskedView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let stringTextField = textField.text else { return true }
-        let (shouldChange, updatedText) = manager.maskedTextField(stringTextField: stringTextField, range: range, string: string)
+        let (shouldChange, updatedText) = TextFieldsManagers.shared.maskedTextField(stringTextField: stringTextField, range: range, string: string)
         if string.isEmpty {
             return true
         }

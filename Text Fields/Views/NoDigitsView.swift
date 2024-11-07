@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class NoDigitsView: UIView {
-    private let manager = TextFieldsManagers()
+
     
     private let noDigitsLabel: UILabel = {
         var label = UILabel()
@@ -68,7 +68,7 @@ extension NoDigitsView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let stringTextField = textField.text {
-            let (shouldChange, updatedText) = manager.noNumberInString(stringTextField: stringTextField, range: range, string: string)
+            let (shouldChange, updatedText) = TextFieldsManagers.shared.noNumberInString(stringTextField: stringTextField, range: range, string: string)
             if shouldChange {
                 noDigitsTextField.text = updatedText
             }

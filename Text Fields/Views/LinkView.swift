@@ -14,7 +14,7 @@ protocol LinkViewDelegate: AnyObject {
 
 final class LinkView: UIView {
     weak var delegate: LinkViewDelegate?
-    private let manager = TextFieldsManagers()
+
     
     private let linkLabel: UILabel = {
         var label = UILabel()
@@ -67,7 +67,7 @@ extension LinkView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == linkTextField {
             guard let strURL = textField.text else { return true }
-            let (shouldOpen, url) = manager.openUrl(strURL: strURL)
+            let (shouldOpen, url) = TextFieldsManagers.shared.openUrl(strURL: strURL)
             if shouldOpen {
                 if let url = url {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)

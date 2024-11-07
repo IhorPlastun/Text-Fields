@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class InputLimitView: UIView {
-    private let manager = TextFieldsManagers()
+
     
     private let inputLimitLabel: UILabel = {
         var label = UILabel()
@@ -78,7 +78,7 @@ extension InputLimitView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let stringTextField = textField.text {
-            let (shouldChange, countChar) = manager.limitCharInString(stringTextField: stringTextField, range: range, string: string)
+            let (shouldChange, countChar) = TextFieldsManagers.shared.limitCharInString(stringTextField: stringTextField, range: range, string: string)
             if shouldChange {
                 countCharLabel.text = "\(countChar)/10"
                 return true
