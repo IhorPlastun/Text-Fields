@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 final class InputLimitView: UIView {
+    private let manager = TextFieldsManagers()
+    
     private let inputLimitLabel: UILabel = {
         var label = UILabel()
         label.text = "Input limit"
@@ -32,8 +34,7 @@ final class InputLimitView: UIView {
         return textField
     }()
     
-    func setupUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+  private func setupUI() {
         addSubview(inputLimitLabel)
         addSubview(countCharLabel)
         addSubview(inputLimitTextField)
@@ -51,21 +52,39 @@ final class InputLimitView: UIView {
         ])
     }
     
-    func getTextField() -> UITextField {
-        return inputLimitTextField
-    }
-    
-    func updateCharCount(count: Int) {
-        countCharLabel.text = "\(count)/10"
+    private func defaultSettings() {
+        inputLimitTextField.delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        defaultSettings()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
+        defaultSettings()
+    }
+}
+
+extension InputLimitView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let stringTextField = textField.text {
+            let (shouldChange, countChar) = manager.limitCharInString(stringTextField: stringTextField, range: range, string: string)
+            if shouldChange {
+                countCharLabel.text = "\(countChar)/10"
+                return true
+            }
+            return false
+        }
+        return true
     }
 }

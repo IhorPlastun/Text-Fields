@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 final class PasswordView: UIView {
+    private let manager = TextFieldsManagers()
+    
     private let passwordLabel: UILabel = {
         var label = UILabel()
         label.text = "Validation rules"
@@ -56,8 +58,7 @@ final class PasswordView: UIView {
         return label
     }()
     
-    func setupUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+   private func setupUI() {
         addSubview(passwordLabel)
         addSubview(passwordTextField)
         addSubview(rulesLengthCharLabel)
@@ -88,20 +89,15 @@ final class PasswordView: UIView {
         ])
     }
     
-    func getTextField() -> UITextField {
-        return passwordTextField
-    }
-    
-    func updateValidationStatus(result: [String: Bool]) {
-        rulesLengthCharLabel.textColor = result["minLengthRequirement"] == true ? .green : .red
-        rulesCountNumLabel.textColor = result["containsNumber"] == true ? .green : .red
-        rulesLowercaseLabel.textColor = result["containsLowercase"] == true ? .green : .red
-        rulesUppercaseLabel.textColor = result["containsUppercase"] == true ? .green : .red
+    private func defaultSettings() {
+        passwordTextField.delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     override init(frame:CGRect) {
         super.init(frame: frame)
         setupUI()
+        defaultSettings()
     }
     
     required init?(coder: NSCoder) {
@@ -109,4 +105,25 @@ final class PasswordView: UIView {
     }
     
 }
+
+extension PasswordView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let stringTextField = textField.text else { return true }
+        if string.contains(" ") {
+            return false
+        }
+        let result = manager.validPasswordRules(stringTextField: stringTextField, range: range, string: string)
+        rulesLengthCharLabel.textColor = result["minLengthRequirement"] == true ? .green : .red
+        rulesCountNumLabel.textColor = result["containsNumber"] == true ? .green : .red
+        rulesLowercaseLabel.textColor = result["containsLowercase"] == true ? .green : .red
+        rulesUppercaseLabel.textColor = result["containsUppercase"] == true ? .green : .red
+        return true
+    }
+}
+
 

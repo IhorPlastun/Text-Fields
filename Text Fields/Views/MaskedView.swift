@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 final class MaskedView: UIView {
+    private let manager = TextFieldsManagers()
+    
     private let maskedLabel: UILabel = {
         var label = UILabel()
         label.text = "Only characters"
@@ -24,10 +26,10 @@ final class MaskedView: UIView {
         return textField
     }()
     
-    func setupUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+   private func setupUI() {
         addSubview(maskedLabel)
         addSubview(maskedTextField)
+       
         NSLayoutConstraint.activate([
             maskedLabel.topAnchor.constraint(equalTo: topAnchor),
             maskedLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -38,17 +40,15 @@ final class MaskedView: UIView {
         ])
     }
     
-    func getTextField() -> UITextField {
-        return maskedTextField
-    }
-    
-    func changeTextField(str: String) {
-        maskedTextField.text = str
+    private func defaultSettings() {
+        maskedTextField.delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        defaultSettings()
     }
     
     required init?(coder: NSCoder) {
@@ -56,4 +56,23 @@ final class MaskedView: UIView {
     }
     
     
+}
+
+extension MaskedView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let stringTextField = textField.text else { return true }
+        let (shouldChange, updatedText) = manager.maskedTextField(stringTextField: stringTextField, range: range, string: string)
+        if string.isEmpty {
+            return true
+        }
+        if shouldChange {
+            maskedTextField.text = updatedText
+        }
+        return false
+    }
 }

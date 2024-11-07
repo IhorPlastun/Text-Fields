@@ -8,7 +8,14 @@
 import Foundation
 import UIKit
 
+protocol LinkViewDelegate: AnyObject {
+    func showAlert()
+}
+
 final class LinkView: UIView {
+    weak var delegate: LinkViewDelegate?
+    private let manager = TextFieldsManagers()
+    
     private let linkLabel: UILabel = {
         var label = UILabel()
         label.text = "Link"
@@ -25,8 +32,8 @@ final class LinkView: UIView {
         return textField
     }()
     
-    func setupUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+   private func setupUI() {
+      
         addSubview(linkLabel)
         addSubview(linkTextField)
         
@@ -40,16 +47,35 @@ final class LinkView: UIView {
         ])
     }
     
-    func getTextField() -> UITextField {
-        return linkTextField
+    private func defaultSettings() {
+        linkTextField.delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        defaultSettings()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension LinkView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == linkTextField {
+            guard let strURL = textField.text else { return true }
+            let (shouldOpen, url) = manager.openUrl(strURL: strURL)
+            if shouldOpen {
+                if let url = url {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            } else {
+                delegate?.showAlert()
+            }
+        }
+        return true
     }
 }

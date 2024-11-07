@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 final class NoDigitsView: UIView {
+    private let manager = TextFieldsManagers()
+    
     private let noDigitsLabel: UILabel = {
         var label = UILabel()
         label.text = "NO digits field"
@@ -26,8 +28,7 @@ final class NoDigitsView: UIView {
         return textField
     }()
     
-    func setupUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+  private func setupUI() {
         addSubview(noDigitsLabel)
         addSubview(noDigitsTextField)
         
@@ -41,21 +42,38 @@ final class NoDigitsView: UIView {
         ])
     }
     
-    func getTextField() -> UITextField {
-        return noDigitsTextField
-    }
-    
-    func setTextField(str: String) {
-        noDigitsTextField.text = str
+    private func defaultSettings() {
+        noDigitsTextField.delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        defaultSettings()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
+        defaultSettings()
+    }
+}
+
+extension NoDigitsView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let stringTextField = textField.text {
+            let (shouldChange, updatedText) = manager.noNumberInString(stringTextField: stringTextField, range: range, string: string)
+            if shouldChange {
+                noDigitsTextField.text = updatedText
+            }
+            return false
+        }
+        return true
     }
 }
